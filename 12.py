@@ -1,4 +1,4 @@
-# # http://www.pythonchallenge.com/pc/return/evil.html, un=huge,pw=file 
+# http://www.pythonchallenge.com/pc/return/evil.html, un=huge,pw=file 
 import urllib2,base64
 import Image
 import StringIO
