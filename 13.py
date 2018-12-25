@@ -1,8 +1,8 @@
-# http://www.pythonchallenge.com/pc/return/disproportional.html, un=huge,pw=file
-import xmlrpclib
+# http://www.pythonchallenge.com/pc/return/disproportional.html:huge:file
+import xmlrpc.client
 
-server_url = 'http://www.pythonchallenge.com/pc/phonebook.php'
-server = xmlrpclib.Server(server_url)
-# We phone bert because http://www.pythonchallenge.com/pc/return/evil4.jpg
-print server.phone('Bert')
-print '(or just italy)'
+import util
+
+proxy = xmlrpc.client.ServerProxy("http://www.pythonchallenge.com/pc/phonebook.php")
+print(proxy.phone("Bert"))
+util.print_url("italy", "return")

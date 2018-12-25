@@ -1,29 +1,24 @@
-# http://www.pythonchallenge.com/pc/return/italy.html, un=huge,pw=file 
-import urllib2,base64
-import StringIO
-import Image
-import itertools
+# http://www.pythonchallenge.com/pc/return/italy.html:huge:file
+from PIL import Image
 
-request = urllib2.Request("http://www.pythonchallenge.com/pc/return/wire.png")
-base64string = base64.encodestring('%s:%s' % ('huge', 'file')).replace('\n', '')
-request.add_header("Authorization", "Basic %s" % base64string)   
+import util
 
-data = StringIO.StringIO(urllib2.urlopen(request).read())
-pic = Image.open(data)
-#we map the pixels onto a spiral - down and dirty
-new = Image.new("RGB",(100,100))
+img = util.get_url_image("http://www.pythonchallenge.com/pc/return/wire.png", auth=("huge", "file"))
 
+newimg = Image.new(img.mode, (100, 100))
 
-doubled_steps=200
-directions=[(1,0), (0,1), (-1,0), (0,-1)] #right, down, left, up 
-coor = (-1,0)
-index = 0
-while doubled_steps // 2 > 0:
+steps = 200
+directions = ((1, 0), (0, 1), (-1, 0), (0, -1))
+coords = (-1, 0)
+i = 0
+while steps // 2 > 0:
     for direction in directions:
-        count = doubled_steps // 2
-        for step in range(count):
-            coor = (coor[0] + direction[0], coor[1] + direction[1])
-            new.putpixel(coor, pic.getpixel((index,0)))
-            index += 1
-        doubled_steps -= 1
-new.show()
+        for step in range(steps // 2):
+            coords = (coords[0] + direction[0], coords[1] + direction[1])
+            newimg.putpixel(coords, img.getpixel((i, 0)))
+            i += 1
+        steps -= 1
+newimg.show()
+
+util.print_url("cat", "return")
+util.print_url("uzi", "return")

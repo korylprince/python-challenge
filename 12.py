@@ -1,17 +1,18 @@
-# http://www.pythonchallenge.com/pc/return/evil.html, un=huge,pw=file 
-import urllib2,base64
-import Image
-import StringIO
+# http://www.pythonchallenge.com/pc/return/evil.html:huge:file
+import io
 
-request = urllib2.Request("http://www.pythonchallenge.com/pc/return/evil2.gfx")
-base64string = base64.encodestring('%s:%s' % ('huge', 'file')).replace('\n', '')
-request.add_header("Authorization", "Basic %s" % base64string)   
+from PIL import Image, ImageFile
 
-data = urllib2.urlopen(request).read() 
+import util
 
-open('/tmp/pic1','w').write(data[0::5])
-open('/tmp/pic2','w').write(data[1::5])
-open('/tmp/pic3','w').write(data[2::5])
-open('/tmp/pic4','w').write(data[3::5])
-open('/tmp/pic5','w').write(data[4::5])
-print "see /tmp/pic[1-5] for images"
+# allow viewing truncated image
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+data = util.get_url_file("http://www.pythonchallenge.com/pc/return/evil2.gfx", auth=("huge", "file")).read()
+for i in range(5):
+    with open("/tmp/{0}.jpg".format(i), "wb") as f:
+        f.write(data[i::5])
+    img = Image.open(io.BytesIO(data[i::5]))
+    img.show()
+
+util.print_url("disproportional", "return")

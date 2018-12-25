@@ -1,26 +1,21 @@
 # http://www.pythonchallenge.com/pc/def/channel.html
-import urllib2
-import zipfile
-import StringIO
 import re
+import sys
+import zipfile
 
-data = StringIO.StringIO(urllib2.urlopen('http://www.pythonchallenge.com/pc/def/channel.zip').read())
-zip = zipfile.ZipFile(data)
-nothing = '90052'
-comments = []
+import util
 
-try:
-    while True:
-        # get comment from file
-        comments.append(zip.getinfo(nothing+'.txt').comment)
-        str = zip.open(nothing + '.txt').read()
-        print str
+zip = zipfile.ZipFile(util.get_url_file("http://www.pythonchallenge.com/pc/def/channel.zip"))
+code = "90052"
+while True:
+    comment = zip.getinfo(code + ".txt").comment
+    sys.stdout.write(comment.decode("utf8"))
+    with zip.open(code + ".txt") as f:
+        try:
+            text = f.read().decode("utf8")
+            code = re.search(r"nothing is (\d+)", text).group(1)
+        except AttributeError:
+            break
 
-        # search for string, but capture number only
-        search = re.search(r'[Nn]ext nothing is ([0-9]*)',str)
-        nothing = search.group(1)
-        print 'found: ', nothing
-# stop when no more numbers are found
-except AttributeError:
-    pass
-print ''.join(comments)
+util.print_url("hockey")
+util.print_url("oxygen")

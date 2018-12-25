@@ -1,2 +1,4 @@
 # http://www.pythonchallenge.com/pc/def/0.html
-print 2**38
+import util
+
+util.print_url(2**38)

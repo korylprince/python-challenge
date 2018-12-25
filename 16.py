@@ -1,30 +1,18 @@
-# http://www.pythonchallenge.com/pc/return/mozart.html, un=huge,pw=file
-import urllib2,base64
-import StringIO
-import Image
+# http://www.pythonchallenge.com/pc/return/mozart.html:huge:file
+from PIL import Image
 
-request = urllib2.Request("http://www.pythonchallenge.com/pc/return/mozart.gif")
-base64string = base64.encodestring('%s:%s' % ('huge', 'file')).replace('\n', '')
-request.add_header("Authorization", "Basic %s" % base64string)   
+import util
 
-data = StringIO.StringIO(urllib2.urlopen(request).read())
-pic = Image.open(data)
-indices = []
+img = util.get_url_image("http://www.pythonchallenge.com/pc/return/mozart.gif", auth=("huge", "file")).convert("RGB")
 
-# find where marker is
-new = Image.new("RGB",(640,480))
-for y in xrange(0,480):
-    tempindices = []
-    for x in xrange(0,640):
-        if pic.getpixel((x,y)) == 195:
-            tempindices.append(x)
-    indices.append(tempindices[-1]-5)
+newimg = Image.new(img.mode, (img.width, img.height))
 
-#remap picture
-for index in xrange(0,len(indices)): #index is y
-    for x in xrange(0,640):
-        try:
-            new.putpixel((x,index),pic.getpixel((x+indices[index],index)))
-        except IndexError:
-            new.putpixel((x,index),pic.getpixel((x+indices[index]-640,index)))
-new.show()
+for line in range(img.height):
+    pixels = [img.getpixel((x, line)) for x in range(img.width)]
+    idx = pixels.index((255, 0, 255)) - 1
+    pixels = pixels[idx:] + pixels[:idx]
+    for x in range(img.width):
+        newimg.putpixel((x, line), pixels[x])
+
+newimg.show()
+util.print_url("romance", "return")

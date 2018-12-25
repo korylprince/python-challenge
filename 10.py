@@ -1,32 +1,27 @@
-# http://www.pythonchallenge.com/pc/return/bull.html, un=huge,pw=file
+# http://www.pythonchallenge.com/pc/return/bull.html:huge:file
+import util
 
-#This counts out the previous number 1, 11 (one 1), 21 (two 1s), etc
 
-
-number = '1'
-numbers = ['1']
-while len(numbers)<31:
-    strnum = ''
-    index = 0
+def spell_it_out(input):
+    output = ""
+    letter = None
     count = 0
-    prev = '0'
-    while index <= len(number):
-        if index == len(number):
-            strnum += str(count)+prev
-            break
-        if prev == '0':
-            prev = number[index]
+    for lt in input:
+        if count == 0:
+            letter = lt
             count = 1
-            index += 1
+        elif lt == letter:
+            count += 1
         else:
-            if prev == number[index]:
-                count += 1
-                index += 1
-            else:
-                strnum += str(count)+prev
-                prev = number[index]
-                count = 1
-                index += 1
-    numbers.append(strnum)
-    number = strnum
-print len(numbers[30])
+            output += "{0}{1}".format(count, letter)
+            letter = lt
+            count = 1
+    output += "{0}{1}".format(count, letter)
+    return output
+
+
+code = "1"
+for i in range(30):
+    code = spell_it_out(code)
+
+util.print_url(len(code), "return")
